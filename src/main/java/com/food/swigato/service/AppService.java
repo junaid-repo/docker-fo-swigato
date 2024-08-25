@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +72,7 @@ public class AppService {
 		return response;
 	}
 
+	@Cacheable(key="#customerCode", value="CartDTO")
 	public CartDTO getCartDetails(String customerCode) {
 
 		CartSummary cart = cartRepo.findById(customerCode).get();
