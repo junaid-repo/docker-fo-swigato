@@ -66,7 +66,7 @@ public class AppService {
 		return response;
 	}
 
-	@Cacheable(key="#customerCode", value="CartDTO", unless="#response.#billDetails.#platformFee>10")
+	@Cacheable(key="#customerCode", value="CartDTO", unless="#response.#billDetails.#platformFee<10")
 	public CartDTO getCartDetails(String customerCode) {
 
 		CartSummary cart = cartRepo.findById(customerCode).get();
