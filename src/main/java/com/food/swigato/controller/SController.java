@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.food.swigato.dto.CartDTO;
 import com.food.swigato.dto.CartSummary;
+import com.food.swigato.entities.BillDetails;
 import com.food.swigato.service.AppService;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @RestController
 @RequestMapping("/swigato")
@@ -33,6 +36,7 @@ public class SController {
 	}
 
 	@GetMapping("/get/cartSummary")
+	@CircuitBreaker(name="cartSummaryCircuitBreaker", fallbackMethod="getCartDetails")
 	ResponseEntity<CartDTO> getCartDetails(@RequestParam String customerCode){
 		
 		CartDTO cartResponse = serv.getCartDetails(customerCode);
@@ -40,6 +44,16 @@ public class SController {
 		return ResponseEntity.status(HttpStatus.OK).body(cartResponse);
 		
 	}
+	ResponseEntity<CartDTO> getCartDetails(Throwable throwable) {
+
+		CartDTO cartResponse = CartDTO.builder()
+				.billDetails(BillDetails.builder().cartId("customer api is not available").build()).build();
+
+		return ResponseEntity.status(HttpStatus.OK).body(cartResponse);
+
+	}
+	
+	
 	@PostMapping("/checkout")
 	ResponseEntity<String> doCheckout(@RequestParam String cartId, @RequestParam Double amount){
 		
