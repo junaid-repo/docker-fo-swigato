@@ -52,12 +52,6 @@ public class AppService {
 
 	public CartSummary selectFoodAndAdd(String customerCode, String addressId, String productId, String quantity) {
 
-		// fetch foodDetails from productId
-
-		// fetch customerDetails from customerId
-
-		// fetch address from addressId Id;
-
 		var cartDetails = CartSummary.builder().id(customerCode).customerCode(customerCode)
 				.addressId(Integer.parseInt(addressId)).build();
 		CartSummary response = cartRepo.save(cartDetails);

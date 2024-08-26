@@ -45,7 +45,7 @@ public  class EmailSender {
 				"2fa15000afb8c7ad2cd676c9828bcd5e", new ClientOptions("v3.1"));
 		request = new MailjetRequest(Emailv31.resource).property(Emailv31.MESSAGES,
 				new JSONArray().put(new JSONObject()
-						.put(Emailv31.Message.FROM, new JSONObject().put("Email", "hojowi9360@polatrix.com")
+						.put(Emailv31.Message.FROM, new JSONObject().put("Email", "saad@friendsmobile.store")
 								.put("Name", "Swigato"))
 						.put(Emailv31.Message.TO,
 								new JSONArray().put(
