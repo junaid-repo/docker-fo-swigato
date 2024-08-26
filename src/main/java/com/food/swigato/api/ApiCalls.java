@@ -1,10 +1,10 @@
 package com.food.swigato.api;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,16 +14,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class ApiCalls {
 
 	@Autowired
 	RestTemplate template;
+	
+	@Value("${swigato.host}")
+	private String host;
+	
+	@Value("${swigato.resturantPort}")
+	private String resturantPort;
+	
+	@Value("${swigato.customersPort}")
+	private String customersPort;
 
 	public Map<String, Object> getProductDetails(String id) {
 		// List<GroupMembers> memberList= new ArrayList<>();
 
-		String uri = "http://" + "host.docker.internal:7086" + "/resturant/get/foodDetails/";
+		String uri = "http://" + host+":"+resturantPort + "/resturant/get/foodDetails/";
+		log.info("The uri for getProductDetails "+ uri);
 		ResponseEntity<Map<String, Object>> foodDetails = template.exchange(uri + id, HttpMethod.GET,
 				new HttpEntity<>(httpHeader()), new ParameterizedTypeReference<Map<String, Object>>() {
 				});
@@ -40,7 +53,8 @@ public class ApiCalls {
 	}
 
 	public Map<String, Object> getAddress(Integer id) {
-		String uri = "http://" + "host.docker.internal:7087" + "/customer/view/address?id=";
+		String uri = "http://" + host+":"+customersPort + "/customer/view/address?id=";
+		log.info("The uri for getAddress "+ uri);
 		String finalUri=uri+id;
 		System.out.println(finalUri);
 		ResponseEntity<Map<String, Object>> addressDetails = template.exchange(uri + id, HttpMethod.GET,
@@ -49,7 +63,7 @@ public class ApiCalls {
 		return addressDetails.getBody();
 	}
 	public Map<String, Object> getCustomerDetails(String userCode) {
-		String uri = "http://" + "host.docker.internal:7087" + "/customer/view/customerDetails?userCode=";
+		String uri =  "http://" + host+":"+customersPort  + "/customer/view/customerDetails?userCode=";
 		String finalUri=uri+userCode;
 		System.out.println(finalUri);
 		ResponseEntity<Map<String, Object>> addressDetails = template.exchange(uri + userCode, HttpMethod.GET,
