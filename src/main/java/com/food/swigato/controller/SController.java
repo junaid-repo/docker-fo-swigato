@@ -15,9 +15,11 @@ import com.food.swigato.entities.BillDetails;
 import com.food.swigato.service.AppService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/swigato")
+@Slf4j
 public class SController {
 
 	@Autowired
@@ -38,7 +40,7 @@ public class SController {
 	@GetMapping("/get/cartSummary")
 	@CircuitBreaker(name="cartSummaryCircuitBreaker", fallbackMethod="getCartDetails")
 	ResponseEntity<CartDTO> getCartDetails(@RequestParam String customerCode){
-		
+		log.info("Entering into controller class method");
 		CartDTO cartResponse = serv.getCartDetails(customerCode);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(cartResponse);
