@@ -31,5 +31,7 @@ public class CartSummary {
 	Integer addressId;
 
 	String customerCode;
+	
+	String cartStatus;
 
 }

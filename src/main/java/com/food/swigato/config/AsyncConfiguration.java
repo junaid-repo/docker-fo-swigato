@@ -15,8 +15,8 @@ public class AsyncConfiguration {
 	public Executor asyncExecutorTask() {
 
 		ThreadPoolTaskExecutor exe = new ThreadPoolTaskExecutor();
-		exe.setMaxPoolSize(4);
-		exe.setCorePoolSize(3);
+		exe.setMaxPoolSize(40);
+		exe.setCorePoolSize(30);
 		exe.setQueueCapacity(200);
 		exe.setThreadNamePrefix("GithubLookup-");
 		exe.initialize();

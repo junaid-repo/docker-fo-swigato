@@ -32,5 +32,6 @@ public class BillDetails {
 	private Double extraCharges;
 	private Double grandTotal;
 	private String cartId;
+	private String status;
 
 }

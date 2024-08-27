@@ -29,6 +29,7 @@ public class Cart {
 	private Integer foodId;
 	private Integer addressId;
 	private Integer customerCode;
+	private String cartStatus;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "bill_id", referencedColumnName = "id")

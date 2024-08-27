@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.food.swigato.advice.SwigatoException;
 import com.food.swigato.api.ApiCalls;
 import com.food.swigato.api.EmailSender;
 import com.food.swigato.dto.AddressDTO;
@@ -20,6 +21,7 @@ import com.food.swigato.dto.CartSummary;
 import com.food.swigato.dto.FoodDetails;
 import com.food.swigato.dto.FoodDetailsDTO;
 import com.food.swigato.entities.BillDetails;
+import com.food.swigato.repos.BillDetailsRepository;
 import com.food.swigato.repos.CartSummaryRepository;
 import com.food.swigato.repos.FoodDetailsRepository;
 
@@ -36,8 +38,11 @@ public class AppService {
 	CartSummaryRepository cartRepo;
 
 	@Autowired
+	BillDetailsRepository billDetailsRepo;
+
+	@Autowired
 	FoodDetailsRepository foodRepo;
-	
+
 	@Autowired
 	EmailSender emailSender;
 
@@ -66,10 +71,17 @@ public class AppService {
 		return response;
 	}
 
-	@Cacheable(key="#customerCode", value="CartDTO", unless="#response.#billDetails.#platformFee<10")
+	@Cacheable(key = "#customerCode", value = "CartDTO", unless = "#response.#billDetails.#platformFee<10")
 	public CartDTO getCartDetails(String customerCode) {
 
+		
+		
 		CartSummary cart = cartRepo.findById(customerCode).get();
+		log.info("the cart details are-->"+cart);
+		if(cart.getCartStatus().equals("C")) {
+			throw new SwigatoException("404", "Cart is empty");
+		}
+		
 		Map<String, Object> addressDetails = api.getAddress(cart.getAddressId());
 		List<FoodDetailsDTO> foodLists = new ArrayList<>();
 
@@ -116,13 +128,12 @@ public class AppService {
 		String emailId = (String) customerDetails.get("emailId");
 		String name = (String) customerDetails.get("name");
 		log.info("The email of the customer-->" + emailId);
-		
 
 		if (emailId.equals("na@na.com")) {
 			emailId = "junaidraza3002@gmail.com";
 		}
+		updateCartAndPaymentStatus(cartId);
 		emailSender.sendEmailForOrderConfirmations(emailId, name, amount);
-		//sendEmailToCustomer(emailId, amount, name);
 
 		UUID uuid = UUID.randomUUID();
 		String uuidAsString = uuid.toString();
@@ -130,5 +141,24 @@ public class AppService {
 		return uuidAsString;
 	}
 
+	@Async("asyncTaksExe")
+	public void updateCartAndPaymentStatus(String cartId) {
+
+		try {
+			cartRepo.updateCartStatus(cartId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+
+		}
+		try {
+			billDetailsRepo.updateBillDetails(cartId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+
+		}
+
+		// return CompletableFuture.completedFuture("completed");
+
+	}
 
 }
