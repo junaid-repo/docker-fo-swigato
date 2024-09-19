@@ -1,5 +1,7 @@
 package com.food.swigato.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,14 +40,16 @@ public class SController {
 	}
 
 	@GetMapping("/get/cartSummary")
-	@CircuitBreaker(name="cartSummaryCircuitBreaker", fallbackMethod="getCartDetails")
-	ResponseEntity<CartDTO> getCartDetails(@RequestParam String customerCode){
+	// @CircuitBreaker(name="cartSummaryCircuitBreaker",
+	// fallbackMethod="getCartDetails")
+	ResponseEntity<CartDTO> getCartDetails(@RequestParam String customerCode) {
 		log.info("Entering into controller class method");
 		CartDTO cartResponse = serv.getCartDetails(customerCode);
-		
+
 		return ResponseEntity.status(HttpStatus.OK).body(cartResponse);
-		
+
 	}
+
 	ResponseEntity<CartDTO> getCartDetails(Throwable throwable) {
 
 		CartDTO cartResponse = CartDTO.builder()
@@ -54,16 +58,23 @@ public class SController {
 		return ResponseEntity.status(HttpStatus.OK).body(cartResponse);
 
 	}
-	
-	
+
 	@PostMapping("/checkout")
-	ResponseEntity<String> doCheckout(@RequestParam String cartId, @RequestParam Double amount){
-		
-		String response=serv.doCheckout(cartId, amount);
-		
+	ResponseEntity<String> doCheckout(@RequestParam String cartId, @RequestParam Double amount) {
+
+		String response = serv.doCheckout(cartId, amount);
+
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
+
+	@GetMapping("/get/orderHistory")
+	ResponseEntity<List<CartDTO>> viewAllOrders(@RequestParam String customerCode) {
+
+		List<CartDTO> ordersHistory = serv.getAllOrders(customerCode);
+		return ResponseEntity.status(HttpStatus.FOUND).body(ordersHistory);
+
+	}
+
 	// Cart Summary
 
 	// Select Delivery Address
