@@ -43,7 +43,7 @@ public class SController {
 	// @CircuitBreaker(name="cartSummaryCircuitBreaker",
 	// fallbackMethod="getCartDetails")
 	ResponseEntity<CartDTO> getCartDetails(@RequestParam String customerCode) {
-		log.info("Entering into controller class method");
+		log.info("Entering into controller class method ");
 		CartDTO cartResponse = serv.getCartDetails(customerCode);
 
 		return ResponseEntity.status(HttpStatus.OK).body(cartResponse);
@@ -53,7 +53,7 @@ public class SController {
 	ResponseEntity<CartDTO> getCartDetails(Throwable throwable) {
 
 		CartDTO cartResponse = CartDTO.builder()
-				.billDetails(BillDetails.builder().cartId("customer api is not available").build()).build();
+				.billDetails(BillDetails.builder().cartId("customer api is not available ").build()).build();
 
 		return ResponseEntity.status(HttpStatus.OK).body(cartResponse);
 
